@@ -314,6 +314,9 @@
     font-family:var(--font-mono);font-size:0.62rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
     color:#fff;background:rgba(11,20,32,0.72);padding:3px 8px;border-radius:2px;
   }
+  .work-video-stack{display:flex;flex-direction:column;}
+  .work-video-stack .work-split-half{flex:none;}
+  .work-video-stack video{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#000;}
   .work-note{margin-top:20px;color:var(--text-soft);font-size:0.88rem;}
   .work-note a{color:var(--aqua-2);font-weight:700;text-decoration:underline;}
   :root[data-theme="dark"] .work-note a{color:#6FD3E0;}
