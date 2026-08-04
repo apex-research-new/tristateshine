@@ -125,10 +125,10 @@
   .brand svg{width:34px;height:34px;flex:none;}
   .brand-word{font-family:var(--font-display);font-weight:700;font-size:1.05rem;text-transform:uppercase;letter-spacing:0.02em;line-height:1.05;}
   .brand-word small{display:block;font-family:var(--font-body);font-weight:600;font-size:0.6rem;letter-spacing:0.12em;color:var(--text-soft);text-transform:uppercase;}
-  .nav-links{display:flex;align-items:center;gap:28px;}
+  .nav-links{display:flex;align-items:center;gap:18px;}
   .nav-links a{
-    font-size:0.82rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;
-    text-decoration:none;color:var(--text-soft);
+    font-size:0.74rem;font-weight:600;text-transform:uppercase;letter-spacing:0.03em;
+    text-decoration:none;color:var(--text-soft);white-space:nowrap;
     padding-block:4px;border-bottom:2px solid transparent;
     transition:color .15s ease,border-color .15s ease;
   }
@@ -139,7 +139,7 @@
   .nav-mobile{display:none;flex-direction:column;gap:2px;padding:6px clamp(20px,5vw,40px) 18px;border-bottom:1px solid var(--border);background:var(--bg);}
   .nav-mobile a{padding:12px 4px;text-decoration:none;color:var(--text);font-weight:600;border-bottom:1px solid var(--border);text-transform:uppercase;font-size:0.85rem;letter-spacing:0.04em;}
   .nav-mobile.open{display:flex;}
-  @media (max-width:760px){
+  @media (max-width:1040px){
     .nav-links{display:none;}
     .nav-toggle{display:inline-flex;align-items:center;justify-content:center;}
   }
