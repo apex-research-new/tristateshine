@@ -8,7 +8,8 @@
     { id:"ceramic", name:"Ceramic Coating", blurb:"Paint-safe decontamination wash followed by a hand-applied ceramic layer for lasting shine.", icon:'<path d="M24 6 34 12v12c0 10-6.5 15.5-10 18-3.5-2.5-10-8-10-18V12Z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>' },
     { id:"interior", name:"Interior Detail", blurb:"Complete cabin & trunk vacuum, thorough scrub and sanitize on all plastics, dash & console, leather conditioning, vent cleaning, and streak-free inner glass. Starting at $120.", icon:'<rect x="10" y="10" width="28" height="28" rx="5" stroke="currentColor" stroke-width="2" fill="none"/><path d="M16 24h16M16 30h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
     { id:"bugsap", name:"Bug &amp; Sap Removal", blurb:"Safe, targeted removal of bug splatter, tree sap and road grime from paint and windshield.", icon:'<circle cx="18" cy="18" r="3" fill="currentColor"/><circle cx="30" cy="14" r="2" fill="currentColor"/><circle cx="32" cy="28" r="2.6" fill="currentColor"/><path d="M8 36c8-10 24-10 32 0" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>' },
-    { id:"commercial", name:"Commercial &amp; Fleet", blurb:"Recurring wash plans for business vehicles, fleets and dealerships across Westchester.", icon:'<rect x="6" y="20" width="20" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M26 24h8l6 6v2h-14z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/><circle cx="14" cy="34" r="2.6" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="32" cy="34" r="2.6" stroke="currentColor" stroke-width="2" fill="none"/>' }
+    { id:"commercial", name:"Commercial &amp; Fleet", blurb:"Recurring wash plans for business vehicles, fleets and dealerships across Westchester.", icon:'<rect x="6" y="20" width="20" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M26 24h8l6 6v2h-14z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/><circle cx="14" cy="34" r="2.6" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="32" cy="34" r="2.6" stroke="currentColor" stroke-width="2" fill="none"/>' },
+    { id:"recurring", name:"Recurring Residential Plan", blurb:"Set it and forget it — regular washes on a schedule that works for you, weekly, biweekly, or monthly. Ask us for recurring pricing.", icon:'<path d="M35 14a15 15 0 1 0 3 9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M38 6v9h-9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' }
   ];
 
   var state = { service:null, vehicleType:null, vehicleDesc:"", address:"", date:"", timeWindow:null, fullName:"", phone:"", email:"", referredBy:"", notes:"" };
@@ -227,8 +228,14 @@
       });
     }
   }
-  root.querySelector("#sendTextBtn").addEventListener("click", submitLeadBackup);
-  root.querySelector("#sendEmailBtn").addEventListener("click", submitLeadBackup);
+  root.querySelector("#sendTextBtn").addEventListener("click", function(){
+    submitLeadBackup();
+    if(window.TSS && TSS.trackEvent){ TSS.trackEvent("booking_lead_sent_text", { service: state.service }); }
+  });
+  root.querySelector("#sendEmailBtn").addEventListener("click", function(){
+    submitLeadBackup();
+    if(window.TSS && TSS.trackEvent){ TSS.trackEvent("booking_lead_sent_email", { service: state.service }); }
+  });
 
   function escapeHtml(str){
     var div = document.createElement("div");

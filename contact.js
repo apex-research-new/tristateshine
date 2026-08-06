@@ -72,12 +72,14 @@
     if(!validateRequired()){ e.preventDefault(); return; }
     refreshLink();
     submitLeadBackup();
+    if(window.TSS && TSS.trackEvent){ TSS.trackEvent("contact_lead_sent_text"); }
   });
 
   document.getElementById("sendEmailBtn").addEventListener("click", function(e){
     if(!validateRequired()){ e.preventDefault(); return; }
     refreshLink();
     submitLeadBackup();
+    if(window.TSS && TSS.trackEvent){ TSS.trackEvent("contact_lead_sent_email"); }
   });
 
   document.getElementById("copyBtn").addEventListener("click", function(){

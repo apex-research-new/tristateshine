@@ -26,6 +26,20 @@
     }catch(e){ /* no-op */ }
   };
 
+  // ---- Analytics events (Vercel Analytics custom events) ----
+  // The queue shim below lets us call TSS.trackEvent(...) even before
+  // /_vercel/insights/script.js has finished loading — it just queues the
+  // calls, same as Vercel's own documented pattern.
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  TSS.trackEvent = function(name, data){
+    try{ window.va("event", data ? { name: name, data: data } : { name: name }); }catch(e){ /* no-op */ }
+  };
+  // Any element with data-track="event_name" gets tracked on click automatically.
+  document.addEventListener("click", function(e){
+    var el = e.target.closest("[data-track]");
+    if(el){ TSS.trackEvent(el.getAttribute("data-track")); }
+  });
+
   var navToggle = document.getElementById("navToggle");
   var navMobile = document.getElementById("navMobile");
   if(navToggle && navMobile){
