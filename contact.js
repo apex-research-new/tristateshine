@@ -52,14 +52,32 @@
     return nameOk && phoneOk && msgOk;
   }
 
+  function submitLeadBackup(){
+    var name = document.getElementById("cName").value.trim();
+    var phone = document.getElementById("cPhone").value.trim();
+    var email = document.getElementById("cEmail").value.trim();
+    var reason = document.querySelector('input[name="reason"]:checked');
+    if(window.TSS && TSS.submitLead){
+      TSS.submitLead({
+        subject: "Website Contact" + (reason ? " — " + reason.value : ""),
+        name: name,
+        phone: phone,
+        email: email || undefined,
+        message: buildMessage()
+      });
+    }
+  }
+
   document.getElementById("sendTextBtn").addEventListener("click", function(e){
     if(!validateRequired()){ e.preventDefault(); return; }
     refreshLink();
+    submitLeadBackup();
   });
 
   document.getElementById("sendEmailBtn").addEventListener("click", function(e){
     if(!validateRequired()){ e.preventDefault(); return; }
     refreshLink();
+    submitLeadBackup();
   });
 
   document.getElementById("copyBtn").addEventListener("click", function(){

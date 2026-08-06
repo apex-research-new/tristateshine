@@ -213,6 +213,20 @@
     emailBtn.href = "mailto:chrisrod10.08@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(msg);
   }
 
+  function submitLeadBackup(){
+    if(window.TSS && TSS.submitLead){
+      TSS.submitLead({
+        subject: "Booking Request — " + (svcName(state.service) || "Tri-State Shine"),
+        name: state.fullName,
+        phone: state.phone,
+        email: state.email || undefined,
+        message: buildMessage()
+      });
+    }
+  }
+  root.querySelector("#sendTextBtn").addEventListener("click", submitLeadBackup);
+  root.querySelector("#sendEmailBtn").addEventListener("click", submitLeadBackup);
+
   function escapeHtml(str){
     var div = document.createElement("div");
     div.textContent = str;

@@ -1,5 +1,31 @@
 (function(){
   "use strict";
+
+  // ---- Lead capture backup (Web3Forms) ----
+  // Booking and Contact already hand the visitor a pre-filled sms:/mailto: link
+  // (see booking.js / contact.js) — that stays the primary path. This is a silent
+  // backup copy sent straight to Web3Forms so a lead is never lost just because a
+  // visitor's device has no default text/mail app (common on desktop).
+  //
+  // To activate: go to https://web3forms.com, enter the business email, and it
+  // instantly emails back an access key — no password or account needed. Paste
+  // that key below in place of the placeholder.
+  window.TSS = window.TSS || {};
+  TSS.WEB3FORMS_ACCESS_KEY = "e66e1e19-cd7b-4c22-b9b0-273d4b1639e4";
+  TSS.submitLead = function(payload){
+    if(!TSS.WEB3FORMS_ACCESS_KEY || TSS.WEB3FORMS_ACCESS_KEY.indexOf("PASTE_YOUR_") === 0){
+      return; // not configured yet — no-op, primary sms:/mailto: flow is unaffected
+    }
+    var body = Object.assign({ access_key: TSS.WEB3FORMS_ACCESS_KEY }, payload);
+    try{
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(body)
+      }).catch(function(){ /* silent — sms:/mailto: already carried the lead */ });
+    }catch(e){ /* no-op */ }
+  };
+
   var navToggle = document.getElementById("navToggle");
   var navMobile = document.getElementById("navMobile");
   if(navToggle && navMobile){
