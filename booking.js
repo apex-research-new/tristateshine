@@ -11,7 +11,7 @@
     { id:"commercial", name:"Commercial &amp; Fleet", blurb:"Recurring wash plans for business vehicles, fleets and dealerships across Westchester.", icon:'<rect x="6" y="20" width="20" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M26 24h8l6 6v2h-14z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/><circle cx="14" cy="34" r="2.6" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="32" cy="34" r="2.6" stroke="currentColor" stroke-width="2" fill="none"/>' }
   ];
 
-  var state = { service:null, vehicleType:null, vehicleDesc:"", address:"", date:"", timeWindow:null, fullName:"", phone:"", email:"", notes:"" };
+  var state = { service:null, vehicleType:null, vehicleDesc:"", address:"", date:"", timeWindow:null, fullName:"", phone:"", email:"", referredBy:"", notes:"" };
   var currentStep = 1;
   var TOTAL_STEPS = 5;
 
@@ -133,6 +133,7 @@
       state.fullName = nameInput.value.trim();
       state.phone = phoneInput.value.trim();
       state.email = root.querySelector("#email").value.trim();
+      state.referredBy = root.querySelector("#referredBy").value.trim();
       state.notes = root.querySelector("#notes").value.trim();
       var nameField = nameInput.closest(".field");
       var phoneField = phoneInput.closest(".field");
@@ -157,7 +158,7 @@
   function resetForm(){
     root.querySelector("#bookingForm").reset();
     root.querySelectorAll(".option-card.selected").forEach(function(c){ c.classList.remove("selected"); });
-    state = { service:null, vehicleType:null, vehicleDesc:"", address:"", date:"", timeWindow:null, fullName:"", phone:"", email:"", notes:"" };
+    state = { service:null, vehicleType:null, vehicleDesc:"", address:"", date:"", timeWindow:null, fullName:"", phone:"", email:"", referredBy:"", notes:"" };
     root.querySelector("#copyFeedback").style.display = "none";
     goToStep(1);
   }
@@ -181,6 +182,7 @@
       "Phone: " + (state.phone || "—")
     ];
     if(state.email){ lines.push("Email: " + state.email); }
+    if(state.referredBy){ lines.push("Referred by: " + state.referredBy + " (referral — $20 off this booking, $20 to referrer once complete)"); }
     if(state.notes){ lines.push("Notes: " + state.notes); }
     return lines.join("\n");
   }
@@ -197,6 +199,7 @@
       ["Phone", state.phone || "—"]
     ];
     if(state.email){ rows.push(["Email", state.email]); }
+    if(state.referredBy){ rows.push(["Referred by", state.referredBy + " ($20 off + $20 referral)"]); }
     if(state.notes){ rows.push(["Notes", state.notes]); }
     list.innerHTML = rows.map(function(r){
       return "<li><dt>" + r[0] + "</dt><dd>" + escapeHtml(r[1]) + "</dd></li>";
