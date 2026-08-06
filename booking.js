@@ -228,12 +228,20 @@
       });
     }
   }
+  // Google Ads conversion — "Book appointment" (fires once per completed request)
+  function trackBookingConversion(){
+    if(typeof gtag === "function"){
+      try{ gtag('event', 'conversion', {'send_to': 'AW-18371223681/nISpCPGShtwcEIHBirhE'}); }catch(e){ /* no-op */ }
+    }
+  }
   root.querySelector("#sendTextBtn").addEventListener("click", function(){
     submitLeadBackup();
+    trackBookingConversion();
     if(window.TSS && TSS.trackEvent){ TSS.trackEvent("booking_lead_sent_text", { service: state.service }); }
   });
   root.querySelector("#sendEmailBtn").addEventListener("click", function(){
     submitLeadBackup();
+    trackBookingConversion();
     if(window.TSS && TSS.trackEvent){ TSS.trackEvent("booking_lead_sent_email", { service: state.service }); }
   });
 
