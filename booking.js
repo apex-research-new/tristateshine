@@ -1,51 +1,17 @@
 (function(){
   "use strict";
   var root = document;
+  var SERVICES = window.SERVICES || [];
+  var ADDON_SERVICES = SERVICES.filter(function(s){ return s.addon; });
 
-  var SERVICES = [
-    { id:"express", name:"Exterior Detail", blurb:"Hand foam wash, wheel & rim cleaning, tire shine, streak-free windows, and spray sealant protection. Starting at $90.", icon:'<path d="M6 24c0-9 8-16 18-16s18 7 18 16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M10 30h28M13 36h22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>', core:true },
-    { id:"interior", name:"Interior Detail", blurb:"Complete cabin & trunk vacuum, thorough scrub and sanitize on all plastics, dash & console, leather conditioning, vent cleaning, and streak-free inner glass. Starting at $130.", icon:'<rect x="10" y="10" width="28" height="28" rx="5" stroke="currentColor" stroke-width="2" fill="none"/><path d="M16 24h16M16 30h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>', core:true },
-    { id:"full", name:"Full Detail", blurb:"The complete Interior + Exterior service, bundled with an automatic $20 discount. Starting at $200.", icon:'<rect x="8" y="16" width="32" height="18" rx="6" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="16" cy="36" r="3.2" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="32" cy="36" r="3.2" stroke="currentColor" stroke-width="2" fill="none"/>', badge:"Best Value", core:true },
-    { id:"ceramic", name:"Ceramic Coating", blurb:"Paint-safe decontamination wash followed by a hand-applied ceramic layer for lasting shine.", icon:'<path d="M24 6 34 12v12c0 10-6.5 15.5-10 18-3.5-2.5-10-8-10-18V12Z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>' },
-    { id:"ceramicwax", name:"Ceramic Wax Upgrade", blurb:"A durable, high-gloss ceramic wax added on top of any wash or detail for extra shine and protection between full ceramic coating services. +$99.", icon:'<path d="M24 6v8M24 34v8M6 24h8M34 24h8M11.5 11.5l5.6 5.6M30.9 30.9l5.6 5.6M36.5 11.5l-5.6 5.6M17.1 30.9l-5.6 5.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
-    { id:"headlight", name:"Headlight Restoration", blurb:"Foggy, yellowed headlights buffed and restored back to clear — improves both looks and nighttime visibility. +$75.", icon:'<ellipse cx="18" cy="24" rx="10" ry="12" stroke="currentColor" stroke-width="2" fill="none"/><path d="M32 17h9M34 24h9M32 31h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
-    { id:"scratch", name:"Scratch Polishing", blurb:"Light surface scratches and swirl marks polished out by hand for a smoother, more even finish.", icon:'<path d="M9 34 29 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M27 8a10 10 0 1 1-6 18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>' },
-    { id:"trim", name:"Trim Restoration", blurb:"Faded, sun-bleached plastic trim and bumpers restored back to a deep, even black finish.", icon:'<rect x="8" y="20" width="32" height="8" rx="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M13 20v8M35 20v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>' },
-    { id:"debadge", name:"Debadging", blurb:"Clean removal of unwanted manufacturer badges and emblems for a smoother, more custom look.", icon:'<rect x="14" y="15" width="20" height="14" rx="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M9 35 39 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
-    { id:"bugsap", name:"Bug &amp; Sap Removal", blurb:"Safe, targeted removal of bug splatter, tree sap and road grime from paint and windshield.", icon:'<circle cx="18" cy="18" r="3" fill="currentColor"/><circle cx="30" cy="14" r="2" fill="currentColor"/><circle cx="32" cy="28" r="2.6" fill="currentColor"/><path d="M8 36c8-10 24-10 32 0" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>' },
-    { id:"commercial", name:"Commercial &amp; Fleet", blurb:"Recurring wash plans for business vehicles, fleets and dealerships across Westchester.", icon:'<rect x="6" y="20" width="20" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M26 24h8l6 6v2h-14z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/><circle cx="14" cy="34" r="2.6" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="32" cy="34" r="2.6" stroke="currentColor" stroke-width="2" fill="none"/>' }
-  ];
-
-  var state = { service:null, vehicleType:null, vehicleDesc:"", address:"", date:"", timeWindow:null, fullName:"", phone:"", email:"", referredBy:"", notes:"" };
+  var state = { service:null, addons:[], vehicleType:null, vehicleDesc:"", address:"", date:"", timeWindow:null, fullName:"", phone:"", email:"", referredBy:"", notes:"" };
   var currentStep = 1;
   var TOTAL_STEPS = 5;
 
-  var svcGrid = root.querySelector("#svcGrid");
-  var addonGrid = root.querySelector("#addonGrid");
   var serviceOptions = root.querySelector("#serviceOptions");
+  var addonCheckWrap = root.querySelector("#addonChecklist");
 
   SERVICES.forEach(function(svc){
-    if(svc.core){
-      var card = document.createElement("div");
-      card.className = "svc-card" + (svc.badge ? " svc-card-featured" : "");
-      card.innerHTML =
-        (svc.badge ? '<span class="svc-badge">' + svc.badge + '</span>' : '') +
-        '<svg class="svc-icon" viewBox="0 0 48 48" fill="none">' + svc.icon + '</svg>' +
-        '<h3>' + svc.name + '</h3>' +
-        '<p>' + svc.blurb + '</p>' +
-        '<button type="button" class="svc-book" data-svc="' + svc.id + '">Book this <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
-      svcGrid.appendChild(card);
-    } else {
-      var addon = document.createElement("div");
-      addon.className = "addon-card";
-      addon.innerHTML =
-        '<svg class="addon-icon" viewBox="0 0 48 48" fill="none">' + svc.icon + '</svg>' +
-        '<h4>' + svc.name + '</h4>' +
-        '<p>' + svc.blurb + '</p>' +
-        '<button type="button" class="addon-book" data-svc="' + svc.id + '">Book this <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
-      addonGrid.appendChild(addon);
-    }
-
     var opt = document.createElement("label");
     opt.className = "option-card";
     opt.setAttribute("data-svc-option", svc.id);
@@ -53,20 +19,20 @@
     serviceOptions.appendChild(opt);
   });
 
+  ADDON_SERVICES.forEach(function(svc){
+    var row = document.createElement("label");
+    row.className = "addon-check-row";
+    row.setAttribute("data-addon-option", svc.id);
+    row.innerHTML =
+      '<input type="checkbox" name="addons" value="' + svc.id + '">' +
+      '<span class="addon-check-name">' + svc.name + (svc.price ? ' <em>' + svc.price + '</em>' : '') + '</span>';
+    addonCheckWrap.appendChild(row);
+  });
+
   function svcName(id){
     var m = SERVICES.filter(function(s){ return s.id === id; })[0];
     return m ? m.name.replace(/&amp;/g,"&") : "";
   }
-
-  root.querySelectorAll(".svc-book, .addon-book").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      var id = btn.getAttribute("data-svc");
-      selectRadio("service", id);
-      state.service = id;
-      goToStep(1);
-      scrollToBooking();
-    });
-  });
 
   function selectRadio(name, value){
     root.querySelectorAll('input[name="' + name + '"]').forEach(function(input){
@@ -82,16 +48,35 @@
         var card = i.closest(".option-card");
         if(card){ card.classList.toggle("selected", i.checked); }
       });
+      if(input.name === "service"){ refreshAddonChecklist(); }
     });
   });
 
-  function scrollToBooking(){
-    var el = root.querySelector("#booking");
-    if(el){ el.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start" }); }
+  // Hide the addon checkbox that matches whatever's picked as the primary
+  // service, so nothing gets offered as "extra" alongside itself.
+  function refreshAddonChecklist(){
+    var picked = root.querySelector('input[name="service"]:checked');
+    var pickedId = picked ? picked.value : null;
+    root.querySelectorAll("[data-addon-option]").forEach(function(row){
+      var isSelf = row.getAttribute("data-addon-option") === pickedId;
+      row.style.display = isSelf ? "none" : "";
+      if(isSelf){
+        var cb = row.querySelector('input[type="checkbox"]');
+        if(cb){ cb.checked = false; }
+      }
+    });
   }
 
-  root.querySelector("#navBookBtn").addEventListener("click", function(e){ e.preventDefault(); goToStep(1); scrollToBooking(); });
-  root.querySelector("#heroBookBtn").addEventListener("click", function(e){ e.preventDefault(); goToStep(1); scrollToBooking(); });
+  // ---- pre-select a service from ?service=ID in the URL (linked from services.html) ----
+  (function preselectFromQuery(){
+    var params = new URLSearchParams(window.location.search);
+    var svcId = params.get("service");
+    if(svcId && SERVICES.some(function(s){ return s.id === svcId; })){
+      selectRadio("service", svcId);
+      state.service = svcId;
+      refreshAddonChecklist();
+    }
+  })();
 
   // ---- step machine ----
   var panels = root.querySelectorAll(".step-panel");
@@ -123,6 +108,7 @@
     if(n === 1){
       var svc = root.querySelector('input[name="service"]:checked');
       state.service = svc ? svc.value : null;
+      state.addons = Array.from(root.querySelectorAll('input[name="addons"]:checked')).map(function(cb){ return cb.value; });
       return !!state.service;
     }
     if(n === 2){
@@ -175,8 +161,9 @@
   function resetForm(){
     root.querySelector("#bookingForm").reset();
     root.querySelectorAll(".option-card.selected").forEach(function(c){ c.classList.remove("selected"); });
-    state = { service:null, vehicleType:null, vehicleDesc:"", address:"", date:"", timeWindow:null, fullName:"", phone:"", email:"", referredBy:"", notes:"" };
+    state = { service:null, addons:[], vehicleType:null, vehicleDesc:"", address:"", date:"", timeWindow:null, fullName:"", phone:"", email:"", referredBy:"", notes:"" };
     root.querySelector("#copyFeedback").style.display = "none";
+    refreshAddonChecklist();
     goToStep(1);
   }
 
@@ -188,16 +175,23 @@
     return d.toLocaleDateString(undefined, { weekday:"short", month:"short", day:"numeric", year:"numeric" });
   }
 
+  function addonNames(){
+    return state.addons.map(function(id){ return svcName(id); }).filter(Boolean);
+  }
+
   function buildMessage(){
     var lines = [
       "Hi Tri-State Shine, I'd like to request a booking:",
-      "Service: " + (svcName(state.service) || "—"),
+      "Service: " + (svcName(state.service) || "—")
+    ];
+    if(state.addons.length){ lines.push("Add-ons: " + addonNames().join(", ")); }
+    lines.push(
       "Vehicle: " + (state.vehicleType || "—") + (state.vehicleDesc ? " (" + state.vehicleDesc + ")" : ""),
       "Address: " + (state.address || "—"),
       "Date: " + fmtDate(state.date) + (state.timeWindow ? ", " + state.timeWindow : ""),
       "Name: " + (state.fullName || "—"),
       "Phone: " + (state.phone || "—")
-    ];
+    );
     if(state.email){ lines.push("Email: " + state.email); }
     if(state.referredBy){ lines.push("Referred by: " + state.referredBy + " (referral — $20 off this booking, $20 to referrer once complete)"); }
     if(state.notes){ lines.push("Notes: " + state.notes); }
@@ -207,14 +201,17 @@
   function renderReview(){
     var list = root.querySelector("#reviewList");
     var rows = [
-      ["Service", svcName(state.service) || "—"],
+      ["Service", svcName(state.service) || "—"]
+    ];
+    if(state.addons.length){ rows.push(["Add-ons", addonNames().join(", ")]); }
+    rows.push(
       ["Vehicle", (state.vehicleType || "—") + (state.vehicleDesc ? " · " + state.vehicleDesc : "")],
       ["Address", state.address || "—"],
       ["Date", fmtDate(state.date)],
       ["Time", state.timeWindow || "—"],
       ["Name", state.fullName || "—"],
       ["Phone", state.phone || "—"]
-    ];
+    );
     if(state.email){ rows.push(["Email", state.email]); }
     if(state.referredBy){ rows.push(["Referred by", state.referredBy + " ($20 off + $20 referral)"]); }
     if(state.notes){ rows.push(["Notes", state.notes]); }
@@ -246,11 +243,11 @@
   }
   root.querySelector("#sendTextBtn").addEventListener("click", function(){
     submitLeadBackup();
-    if(window.TSS && TSS.trackEvent){ TSS.trackEvent("booking_lead_sent_text", { service: state.service }); }
+    if(window.TSS && TSS.trackEvent){ TSS.trackEvent("booking_lead_sent_text", { service: state.service, addons: state.addons.join(",") }); }
   });
   root.querySelector("#sendEmailBtn").addEventListener("click", function(){
     submitLeadBackup();
-    if(window.TSS && TSS.trackEvent){ TSS.trackEvent("booking_lead_sent_email", { service: state.service }); }
+    if(window.TSS && TSS.trackEvent){ TSS.trackEvent("booking_lead_sent_email", { service: state.service, addons: state.addons.join(",") }); }
   });
 
   function escapeHtml(str){
@@ -289,5 +286,6 @@
   var iso = today.getFullYear() + "-" + String(today.getMonth()+1).padStart(2,"0") + "-" + String(today.getDate()).padStart(2,"0");
   dateInput.setAttribute("min", iso);
 
+  refreshAddonChecklist();
   goToStep(1);
 })();

@@ -311,6 +311,19 @@
   :root[data-theme="dark"] .addon-book{color:#6FD3E0;}
   @media (prefers-color-scheme:dark){ .addon-book{color:#6FD3E0;} }
   .addon-book:hover{text-decoration:underline;}
+  .addon-price{color:var(--shine);font-family:var(--font-mono);font-size:0.72rem;font-weight:700;}
+
+  /* ---------- BOOKING ADD-ON UPSELL ---------- */
+  .addon-checklist-wrap{margin-top:20px;padding-top:18px;border-top:1px dashed var(--border);}
+  .addon-checklist-wrap > span{display:block;font-family:var(--font-mono);font-size:0.72rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-soft);margin-bottom:10px;}
+  .addon-checklist{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+  @media (max-width:560px){ .addon-checklist{grid-template-columns:1fr;} }
+  .addon-check-row{
+    display:flex;align-items:center;gap:9px;background:var(--surface-2);border:1px solid var(--border);
+    border-radius:3px;padding:10px 12px;font-size:0.86rem;cursor:pointer;
+  }
+  .addon-check-row input{flex:none;width:16px;height:16px;accent-color:var(--shine);}
+  .addon-check-name em{font-style:normal;color:var(--shine);font-family:var(--font-mono);font-size:0.78rem;margin-left:4px;}
 
   /* ---------- PRICING ---------- */
   .price-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:3px;}
